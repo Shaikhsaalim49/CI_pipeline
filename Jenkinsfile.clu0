@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+    environmet {
+        DOCKER_REGISTRY = ''
+        IMAGE_NAME = 'python-app'
+        TAG = "${env.BUILD_NUMBER}"
+        SONARQUBE = 'SonarQube'
+    }
+    stages{
+        stage('Checkout SCM')
+        {
+        steps {
+            Checkout scm
+        }
+
+    }
+    stage(install dependencies) {
+        steps {
+            sh 'pip install requirement.txt'
+        }
+    }
+    stage('Unit tests'){
+        steps
+        {
+            sh 'pip install pytest && pytest --junitxml=report.xml'
+        }
+    }
+    }
+}
