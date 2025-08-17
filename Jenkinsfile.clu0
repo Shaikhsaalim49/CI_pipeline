@@ -16,7 +16,7 @@ pipeline {
     }
     stage('install dependencies') {
         steps {
-            sh 'python3.9 -m pip install -r requirement.txt'
+            sh 'python3.9 -m pip install -r requirements.txt'
         }
     }
     stage('Unit tests'){
