@@ -1,10 +1,10 @@
 pipeline {
     agent any
     environment {
-        DOCKER_REGISTRY = ''          // add registry URL if needed
-        IMAGE_NAME = 'python-app'
+        DOCKER_REGISTRY = 'ghcr.io/shaikhsaalim49'
+        IMAGE_NAME = 'python_fastapi'
         TAG = "${env.BUILD_NUMBER}"
-        SONARQUBE = 'SonarQube'       // Jenkins SonarQube server name (from Manage Jenkins -> Configure System)
+        SONARQUBE = 'SonarQube'   // Jenkins SonarQube server name (Manage Jenkins -> Configure System)
     }
 
     stages {
@@ -47,19 +47,20 @@ pipeline {
             steps {
                 sh '''
                     docker build -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${TAG} .
+                    docker tag ${DOCKER_REGISTRY}/${IMAGE_NAME}:${TAG} ${DOCKER_REGISTRY}/${IMAGE_NAME}:latest
                 '''
             }
         }
 
         stage('Push Docker Image') {
-            when {
-                expression { env.DOCKER_REGISTRY?.trim() }
-            }
             steps {
-                sh '''
-                    echo "Pushing image to registry..."
-                    docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${TAG}
-                '''
+                withCredentials([usernamePassword(credentialsId: 'githubcreds', usernameVariable: 'USERNAME', passwordVariable: 'TOKEN')]) {
+                    sh '''
+                        echo $TOKEN | docker login ghcr.io -u $USERNAME --password-stdin
+                        docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${TAG}
+                        docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:latest
+                    '''
+                }
             }
         }
     }
