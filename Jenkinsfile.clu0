@@ -32,7 +32,7 @@ pipeline {
             steps {
                 withSonarQubeEnv("${SONARQUBE}") {
                     sh '''
-                        sonar-scanner \
+                        /opt/sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner \
                           -Dsonar.projectKey=python-app \
                           -Dsonar.sources=. \
                           -Dsonar.python.version=3.9 \
