@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    environmet {
+    environment {
         DOCKER_REGISTRY = ''
         IMAGE_NAME = 'python-app'
         TAG = "${env.BUILD_NUMBER}"
@@ -10,13 +10,13 @@ pipeline {
         stage('Checkout SCM')
         {
         steps {
-            Checkout scm
+            checkout scm
         }
 
     }
-    stage(install dependencies) {
+    stage('install dependencies') {
         steps {
-            sh 'pip install requirement.txt'
+            sh 'pip install -r requirement.txt'
         }
     }
     stage('Unit tests'){
